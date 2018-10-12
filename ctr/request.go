@@ -1,6 +1,8 @@
 package ctr
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 )
@@ -29,4 +31,21 @@ func GetQuerySize(r *http.Request) int {
 		result = PAGE_SIZE_DEFAULT
 	}
 	return result
+}
+
+func BindJson(r *http.Request, object interface{}) error {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return err
+	}
+
+	if err := r.Body.Close(); err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(body, &object); err != nil {
+		return err
+	}
+
+	return nil
 }
